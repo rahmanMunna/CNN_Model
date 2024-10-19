@@ -1,0 +1,34 @@
+#Import Library
+
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.models import load_model
+import numpy as np
+import matplotlib.pyplot as plt
+import pickle
+
+categories = ['buildings','forest','glacier','mountain','sea','street']
+
+my_CNN_model = load_model('CnnModel.keras') # load model
+
+img_path = r'img_location.jpg'
+img = image.load_img(img_path, target_size=(height, width))
+
+# Convert image to array and normalize
+img_array = image.img_to_array(img)
+img_array = np.expand_dims(img_array, axis=0)  # Reshape for model input
+img_array /= 255.0  # Normalize pixel values if needed (depends on your model's training preprocessing)
+
+predictions = my_CNN_model.predict(img_array)
+
+# For classification models, use argmax to find the class with the highest probability
+predicted_class = np.argmax(predictions, axis=1)
+
+print(f"Predicted class: {predicted_class}")
+
+predicted_label = categories[predicted_class[0]]
+print(f"Predicted label: {predicted_label}")
+
+plt.imshow(img)
+plt.title(f"Predicted: {predicted_label}")
+plt.axis('off')  # Optional: Hide axes
+plt.show()
